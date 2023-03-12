@@ -16,10 +16,11 @@ def login(user_form: UserLoginForm = Body(..., embed=True), database=Depends(con
     if not user or get_password_hash(user_form.password) != user.password:
         return {'error': 'Email/password invalid'}
 
-    auth_token = AuthToken(token=str(uuid.uuid4()),user_id=user.id)
+    auth_token = AuthToken(token=str(uuid.uuid4()), user_id=user.id)
     database.add(auth_token)
     database.commit()
     return {'auth_token': auth_token.token}
+
 
 @router.post('/user', name='user:create')
 def create_user(user: UserCreateForm = Body(..., embed=True), database=Depends(connect_db)):
@@ -37,8 +38,12 @@ def create_user(user: UserCreateForm = Body(..., embed=True), database=Depends(c
     database.commit()
     return {'user_id': new_user.id}
 
+
 @router.get('/user', name='user:get')
 def get_user(token: AuthToken = Depends(check_auth_token), database=Depends(connect_db)):
     user = database.query(User).filter(User.id == token.user_id).one_or_none()
 
     return {'id': user.id, 'email': user.email, 'nickname': user.nickname}
+
+
+

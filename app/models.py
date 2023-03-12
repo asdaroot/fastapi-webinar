@@ -15,10 +15,12 @@ class StreamStatus(Enum):
     ACTIVE = 'active'
     CLOSED = 'closed'
 
+
 def connect_db():
     engine = create_engine(DATABASE_URL, connect_args={})
     session = Session(bind=engine.connect())
     return session
+
 
 class User(Base):
     __tablename__ = 'users'
@@ -48,7 +50,7 @@ class AuthToken(Base):
 
     id = Column(Integer, primary_key=True)
     token = Column(String)
-    user_id = Column(Integer,ForeignKey('users.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     created_at = Column(String, default=datetime.utcnow())
 
 
